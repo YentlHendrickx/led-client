@@ -4,6 +4,7 @@
 
 import paho.mqtt.client as mqtt
 
+
 class MQTTHandler:
     def __init__(self, broker, port, topic):
         self.broker = broker
@@ -19,8 +20,8 @@ class MQTTHandler:
 
     def on_message(self, client, userdata, msg):
         payload = msg.payload.decode("utf-8")
-        print('Received message: ' + payload) 
-    
+        print('Received message: ' + payload)
+
     def start(self):
         client = mqtt.Client()
         client.on_connect = self.on_connect
@@ -28,5 +29,3 @@ class MQTTHandler:
 
         client.connect(self.broker, self.port, 60)
         client.loop_forever()
-
-        
