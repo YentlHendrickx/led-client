@@ -32,8 +32,6 @@ def get_mac_address():
 
 
 def get_data():
-    global DEVICE_NAME, LED_COUNT
-
     ip = get_ip_address('wlan0')
     mac_address = get_mac_address()
 
@@ -47,8 +45,6 @@ def get_data():
 
 
 def send_device_info():
-    global API_URL, API_PORT, API_PING_ENDPOINT
-
     # Get device data and send to api
     data = get_data()
 
