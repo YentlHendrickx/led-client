@@ -8,7 +8,7 @@ import socket
 import struct
 from decouple import config
 
-from config.config_handler import ConfigHandler
+from storage.storage_handler import StorageHandler
 
 # LED constants
 DEVICE_NAME = config('DEVICE_NAME')
@@ -51,7 +51,6 @@ def get_data():
         "led_count": LED_COUNT,
     })
 
-
 def send_device_info():
     # Get device data and send to api
     data = get_data()
@@ -59,13 +58,41 @@ def send_device_info():
     response = requests.get(
         f"{API_URL}:{API_PORT}{API_PING_ENDPOINT}", json=data)
 
-    # check if respon se is ok
+    # check if response is ok
     if response.status_code == 200:
         device_id = response.json()['device_id']
         print(device_id)
         # Save device id to file
 
-        conf = ConfigHandler('./config.json')
-        conf.add_config({'device_id': device_id})
+        store = StorageHandler('./storage.json')
+        store.add_value({"device_id": device_id})
+        return device_id
+    
+    return None
 
-send_device_info()
+
+def get_effect_info():
+    # get the effect information for this device
+    store = StorageHandler('./storage.json')
+    device_id = store.get_value('device_id')
+
+    if device_id is None:
+        device_id = send_device_info()
+
+        if device_id == None:
+            # No device id?
+            exit(1)
+
+    # DEBUG
+    device_id = 1
+         
+    response = requests.get(
+        f"{API_URL}:{API_PORT}{API_INFO_ENDPOINT}/{device_id}")
+
+    # check if response is ok
+    if response.status_code == 200:
+        effect_info = response.json()
+        return effect_info
+    else:
+        return None
+
