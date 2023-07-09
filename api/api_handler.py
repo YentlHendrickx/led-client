@@ -1,5 +1,5 @@
 # Author: Yentl Hendrickx
-# Last modified: 2023-07-07
+# Last modified: 2023-07-09
 # Description: API handler, sends device info to API, gathers effect info
 
 import requests

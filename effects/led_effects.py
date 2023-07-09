@@ -1,9 +1,13 @@
+# Author: Yentl Hendrickx
+# Last modified: 2023-07-09
+# Description: Run LED effects
+
 import time
 import multiprocessing
 from threading import Thread
 
 def handle_data(data):
-    print("Handling Data!" + data)
+    print(data)
 
 def run_effect():
     print("Running Effect!")

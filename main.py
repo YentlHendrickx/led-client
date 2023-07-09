@@ -33,9 +33,9 @@ def handle_mqtt_payload(payload, queue):
     print(f"Received message {payload}")
 
     # Identify payload and respond accordingly
-    if payload == Payloads.UPDATE:
+    if payload == Payloads.UPDATE.value:
         data = get_effect_info()
-    elif payload == Payloads.GET_INFO:
+    elif payload == Payloads.GET_INFO.value:
         send_device_info()
     else:
         print(f"Unknown payload: {payload}")
