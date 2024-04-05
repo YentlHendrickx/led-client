@@ -1,5 +1,5 @@
 # Author: Yentl Hendrickx
-# Last modified: 2023-07-09
+# Last modified: 2024-04-05
 # Description: Main file, starts MQTT and effects processes
 
 
@@ -16,6 +16,8 @@ from enum import Enum
 import signal
 import sys
 import os
+
+from time import sleep
 
 # Get constants from .env file
 MQTT_BROKER = config("MQTT_BROKER")
@@ -50,11 +52,6 @@ def main():
     effects_termination_event = multiprocessing.Event()
     # Effects queue to pass data to effects process
     effects_queue = multiprocessing.Queue()
-    # Effects process using the queue and termination event
-    effects_process = multiprocessing.Process(target=start_effects, args=(effects_queue, effects_termination_event))
-    # start the effects process
-    effects_process.start()
-    mqtt_handler = None
 
     # Signal handler for SIGINT (shutdown)
     def signal_handler(signal, frame): 
@@ -63,8 +60,15 @@ def main():
         # Termination triggered
         termination_event.set()
 
-    # Register SIGINT handler
+    # Register SIGINT handler (Keyboard interrupt)
     signal.signal(signal.SIGINT, signal_handler)
+
+    # Effects process using the queue and termination event
+    effects_process = multiprocessing.Process(target=start_effects, args=(effects_queue, effects_termination_event))
+    # start the effects process
+    effects_process.start()
+    mqtt_handler = None
+
 
     # Start MQTT handler, payload using lambda to pass args
     mqtt_handler = MQTTHandler(MQTT_BROKER, MQTT_PORT, MQTT_TOPIC, lambda payload: handle_mqtt_payload(payload, effects_queue))
@@ -79,17 +83,23 @@ def main():
     # Main loop, wait for termination event
     while True:
         if termination_event.is_set():
+            print("\n!!! Termination event received !!!")
             # Stop MQTT handler
             if mqtt_handler:
+                print("Attempting to stop MQTT Handler...")
                 mqtt_handler.stop()
+                print("MQTT Handler: STOPPED")
 
             # Stop effects process
             if effects_process:
+                print("\nAttempting to stop Effects Process...")
                 # Try os kill, set termination event and wait for destruction
                 os.kill(effects_process.pid, signal.SIGINT)
                 effects_termination_event.set()
                 effects_process.join()
+                print("Effects Process: STOPPED")
 
+            print("\nCleanup done, exiting...")
             sys.exit(0)
 
 if __name__ == "__main__":
