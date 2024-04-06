@@ -1,5 +1,5 @@
 # Author: Yentl Hendrickx
-# Last modified: 2024-04-05
+# Last modified: 2024-04-06
 # Description: Main file, starts MQTT and effects processes
 
 
@@ -55,9 +55,6 @@ def main():
 
     # Signal handler for SIGINT (shutdown)
     def signal_handler(signal, frame): 
-        print("Terminating...")
-
-        # Termination triggered
         termination_event.set()
 
     # Register SIGINT handler (Keyboard interrupt)
@@ -80,7 +77,6 @@ def main():
     mqtt_thread = Thread(target=mqtt_start_handler)
     mqtt_thread.start()
 
-    # Main loop, wait for termination event
     while True:
         if termination_event.is_set():
             print("\n!!! Termination event received !!!")
@@ -94,10 +90,15 @@ def main():
             if effects_process:
                 print("\nAttempting to stop Effects Process...")
                 # Try os kill, set termination event and wait for destruction
-                os.kill(effects_process.pid, signal.SIGINT)
+                #os.kill(effects_process.pid, signal.SIGINT)
                 effects_termination_event.set()
-                effects_process.join()
-                print("Effects Process: STOPPED")
+                effects_process.join(5)
+                if effects_process.is_alive():
+                    print("Force quitting effects working!")
+                    effects_process.terminate()
+                    print("Effects Process: STOPPED")
+                else:
+                    print("Effects Process: STOPPED")
 
             print("\nCleanup done, exiting...")
             sys.exit(0)

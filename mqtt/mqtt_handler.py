@@ -1,5 +1,5 @@
 # Author: Yentl Hendrickx
-# Last modified: 2023-07-07
+# Last modified: 2024-04-06
 # Description: MQTT handler class
 
 import paho.mqtt.client as mqtt

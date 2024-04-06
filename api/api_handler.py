@@ -22,12 +22,12 @@ API_INFO_ENDPOINT = config('API_INFO_ENDPOINT')
 
 
 def get_ip_address(ifname):
-    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    #s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     return '192.168.199.250'
-    # return socket.inet_ntoa(fcntl.ioctl(
-    # s.fileno(),
-    # 0x8915,
-    # struct.pack('256s', ifname[:15].encode('utf-8')))[20:24])
+    #return socket.inet_ntoa(fcntl.ioctl(
+     #s.fileno(),
+     #0x8915,
+     #struct.pack('256s', ifname[:15].encode('utf-8')))[20:24])
 
 
 def get_mac_address():
@@ -46,18 +46,20 @@ def get_data():
     return ({
         "name": DEVICE_NAME,
         "ip_address": ip,
-        "mac_address": 'b8:27:eb:ce:f5:f4',
-        # "mac_address": mac_address,
+        #"mac_address": 'b8:27:eb:ce:f5:f4',
+        "mac_address": mac_address,
         "led_count": LED_COUNT,
     })
 
 def send_device_info():
     # Get device data and send to api
+    print("Sending device info...")
     data = get_data()
 
     response = requests.get(
         f"{API_URL}:{API_PORT}{API_PING_ENDPOINT}", json=data)
 
+    print(response)
     # check if response is ok
     if response.status_code == 200:
         device_id = response.json()['device_id']
@@ -76,16 +78,12 @@ def get_effect_info():
     store = StorageHandler('./storage.json')
     device_id = store.get_value('device_id')
 
-    if device_id is None:
-        device_id = send_device_info()
+    device_id = send_device_info()
 
-        if device_id == None:
-            # No device id?
-            exit(1)
+    if device_id == None:
+        return
 
-    # DEBUG
-    device_id = 1
-         
+    print(f"{API_URL}:{API_PORT}{API_INFO_ENDPOINT}/{device_id}")
     response = requests.get(
         f"{API_URL}:{API_PORT}{API_INFO_ENDPOINT}/{device_id}")
 

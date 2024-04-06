@@ -1,5 +1,5 @@
 # Author: Yentl Hendrickx
-# Last modified: 2023-07-09
+# Last modified: 2024-04-06
 # Description: Storage handler, adds, reads and removes from storage file
 
 import json
