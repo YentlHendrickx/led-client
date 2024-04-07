@@ -104,7 +104,7 @@ class MovingRainbowEffect(EffectsBase):
 
 def setup_strip():
     global pixels
-    pixels = neopixel.NeoPixel(LED_PIN, NUM_PIXELS, auto_write=False)
+    pixels = neopixel.NeoPixel(LED_PIN, NUM_PIXELS, brightness=1, auto_write=False)
 
 def wheel(pos):
     if pos < 0 or pos > 255:
@@ -132,7 +132,8 @@ def handle_data(data):
             color = data["color_value"].split(",")
             color = (int(color[0]), int(color[1]), int(color[2]))
         
-        parameters = {k: v for k, v in (param.split(":") for param in data["parameters"].split(","))}
+        parameters = {str.lower(k): str.strip(v) for k, v in (param.split(":") for param in data["parameters"].split(","))}
+        print(parameters)
         
         effect_classes = {
             'rainbow': RainbowEffect,
