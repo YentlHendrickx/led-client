@@ -78,6 +78,7 @@ def main():
     mqtt_thread.start()
 
     while True:
+        sleep(1)
         if termination_event.is_set():
             print("\n!!! Termination event received !!!")
             # Stop MQTT handler

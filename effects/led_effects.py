@@ -70,6 +70,7 @@ def rainbow():
     global pixels
     for i in range(NUM_PIXELS):
         pixels[i] = wheel((i * 256 // NUM_PIXELS) & 255)
+    pixels.show()
 
 def run_effect():
     global current_color, current_effect
