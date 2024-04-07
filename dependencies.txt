@@ -1,1 +1,3 @@
 python-decouple
+paho-mqtt
+typing-extensions

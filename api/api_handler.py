@@ -23,7 +23,7 @@ API_INFO_ENDPOINT = config('API_INFO_ENDPOINT')
 
 def get_ip_address(ifname):
     #s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    return '192.168.199.250'
+    return '192.168.199.225'
     #return socket.inet_ntoa(fcntl.ioctl(
      #s.fileno(),
      #0x8915,

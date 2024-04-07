@@ -9,7 +9,7 @@ import time
 
 class MQTTHandler:
     def __init__(self, broker, port, topic, payload_handler):
-        self.client = mqtt.Client()
+        self.client = mqtt.Client(mqtt.CallbackAPIVersion.VERSION1)
         self.broker = broker
         self.port = port
         self.topic = topic
